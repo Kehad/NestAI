@@ -1,11 +1,27 @@
 "use client";
 
-import { Home, LayoutGrid, Map as MapIcon, Heart, Bell, Menu } from 'lucide-react';
+import { Home, LayoutGrid, Map as MapIcon, Heart, Bell, Menu, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { useState, useEffect } from 'react';
+
 
 export default function SidebarNav() {
   const pathname = usePathname();
+    const [user, setUser] = useState<any>(null);
+
+  // useEffect(() => {
+  //   supabase.auth.getSession().then(({ data: { session } }) => {
+  //     setUser(session?.user ?? null);
+  //   });
+
+  //   const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+  //     setUser(session?.user ?? null);
+  //   });
+
+  //   return () => subscription.unsubscribe();
+  // }, []);
 
   const navItems = [
     { icon: LayoutGrid, href: "/" },
@@ -51,6 +67,8 @@ export default function SidebarNav() {
           })}
         </div>
       </div>
+
+      
       
       {/* User avatar bottom */}
       <div className="w-8 h-8 rounded-full bg-[#1f1f1f] text-white font-bold flex items-center justify-center text-[10px] uppercase shadow-md cursor-pointer hover:bg-white hover:text-black transition-colors md:mt-auto hidden md:flex">

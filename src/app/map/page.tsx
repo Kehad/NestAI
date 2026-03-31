@@ -30,7 +30,12 @@ export default function MapPage() {
 
   return (
     <main className="flex h-full w-full bg-[#111111] text-white font-sans overflow-hidden relative">
-      <MapArea />
+      <MapArea 
+        onListingsUpdate={() => {}}
+        onLocationUpdate={() => {}}
+        listings={[]}
+        locationText=""
+      />
     </main>
   );
 }

@@ -27,8 +27,7 @@ export default function LeafletMap({ center, zoom, markers = [] }: LeafletMapPro
       });
 
       // Geoapify Dark Matter theme tiles
-      const GEOAPIFY_API_KEY = '5dd7d61fd67c49589d95cee862668a95'; 
-      L.tileLayer(`https://maps.geoapify.com/v1/tile/dark-matter/{z}/{x}/{y}.png?apiKey=${GEOAPIFY_API_KEY}`, {
+      L.tileLayer(`https://maps.geoapify.com/v1/tile/dark-matter/{z}/{x}/{y}.png?apiKey=${process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}`, {
         maxZoom: 19,
         attribution: 'Powered by Geoapify | © OpenStreetMap contributors'
       }).addTo(mapInstance.current);

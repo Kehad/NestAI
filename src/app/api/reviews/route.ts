@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
           rating, 
           comment, 
           user_name: userName || "Anonymous",
-          created_at: new Error().stack // Simple timestamp-ish
+          created_at: new Date().toISOString()
         }
       ])
       .select();

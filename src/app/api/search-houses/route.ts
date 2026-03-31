@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Firecrawl from "@mendable/firecrawl-js";
+import { supabase } from "@/lib/supabase";
 
 const SCRAPE_CONFIGS = [
   {
@@ -11,6 +12,21 @@ const SCRAPE_CONFIGS = [
     name: "PropertyPro",
     baseUrl: "https://www.propertypro.ng",
     searchPath: "/property-for-rent?search=",
+  },
+  {
+    name: "Twitter",
+    baseUrl: "https://twitter.com",
+    searchPath: "/search?q=house+for+rent+",
+  },
+  {
+    name: "Facebook",
+    baseUrl: "https://www.facebook.com",
+    searchPath: "/search/top?q=house+for+rent+",
+  },
+  {
+    name: "Instagram",
+    baseUrl: "https://www.instagram.com",
+    searchPath: "/explore/search/keyword/?q=house+for+rent+",
   }
 ];
 
@@ -93,6 +109,31 @@ export async function POST(request: NextRequest) {
 
     // Flatten the array of arrays into one single list
     const allListings = resultsArray.flat();
+    console.log("allListings", allListings);
+
+    // Sync listings to database in the background
+    if (allListings.length > 0) {
+      // Create an array mapping our structured data directly into the DB format
+      const dbListings = allListings.map(listing => ({
+        id: listing.id,
+        title: listing.title,
+        price: listing.price,
+        location: listing.location,
+        description: listing.description,
+        link: listing.link,
+        lat: listing.lat,
+        lng: listing.lng,
+        source: listing.source,
+        created_at: new Date().toISOString()
+      }));
+
+      // Insert into supabase
+      supabase.from("listings").insert(dbListings)
+        .then(({ error }) => {
+          if (error) console.error("Database sync error (listings):", error);
+          else console.log(`Successfully synced ${dbListings.length} listings to the database.`);
+        });
+    }
 
     return NextResponse.json({ 
       success: true, 
