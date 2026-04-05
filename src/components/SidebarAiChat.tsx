@@ -23,6 +23,8 @@ export default function SidebarAiChat({ listings }: SidebarAiChatProps) {
     setChatInput("");
     setIsTyping(true);
 
+    console.log("Sending to API:", { messages: newMessages, listings });
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -30,6 +32,7 @@ export default function SidebarAiChat({ listings }: SidebarAiChatProps) {
         body: JSON.stringify({ messages: newMessages, listings })
       });
       const data = await res.json();
+      console.log("API Response:", data);
       setChatMessages([...newMessages, data]);
     } catch (err) {
       console.error("Chat error", err);

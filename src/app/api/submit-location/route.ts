@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // REPLACE THIS with your own Geoapify API Key
-const GEOAPIFY_API_KEY = '5dd7d61fd67c49589d95cee862668a95'; 
+const GEOAPIFY_API_KEY = process.env.GEOAPIFY_API_KEY; 
 
 export async function POST(request: NextRequest) {
   try {

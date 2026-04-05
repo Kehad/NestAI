@@ -1,34 +1,54 @@
+import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
     const { messages, listings } = await request.json();
-    const lastMessage = messages[messages.length - 1].content;
 
-    // AI logic (Mock for now, can be replaced with OpenAI/Anthropic)
-    // It analyzes the listings and answers the user query.
-    
-    let aiResponse = "I'm analyzing the available listings for you... ";
+    // Initialize the new Google Gen AI client
+    // It automatically reads from GEMINI_API_KEY environment variable
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-    if (lastMessage.toLowerCase().includes("cheapest") || lastMessage.toLowerCase().includes("price")) {
-      const cheapest = [...listings].sort((a,b) => {
-        const pA = parseInt(a.price.replace(/\D/g, '')) || 0;
-        const pB = parseInt(b.price.replace(/\D/g, '')) || 0;
-        return pA - pB;
-      })[0];
-      aiResponse = `The cheapest option I found is the "${cheapest.title}" at ${cheapest.price}. It's located in ${cheapest.location}.`;
-    } else if (lastMessage.toLowerCase().includes("best") || lastMessage.toLowerCase().includes("recommend")) {
-      aiResponse = `Based on current reviews and price-to-value ratio, I'd recommend the "${listings[0]?.title}". It has great feedback and is in a prime location.`;
-    } else {
-      aiResponse = `I found ${listings.length} houses for you. You can see them on the map. Most are in the Lagos area with prices ranging from ₦1.2M to ₦8M. Would you like me to compare specific ones?`;
-    }
+    // Limit listings context to avoid huge payloads
+    // const listingsContext = listings ? JSON.stringify(listings.slice(0, 50)) : "[]";
+
+    // Format messages for the @google/genai SDK
+    // SDK expects: [{ role: 'user' | 'model', parts: [{ text: '...' }] }]
+    //     const contents = messages.map((m: any) => ({
+    //       role: m.role === "assistant" ? "model" : m.role,
+    //       parts: [{ text: m.content }]
+    //     }));
+
+    //     const response = await ai.models.generateContent({
+    //       model: "gemini-3-flash-preview",
+    //       contents,
+    //       config: {
+    //         systemInstruction: `You are an AI House Agent for a real estate platform called NestAI. 
+    // Your job is to analyze the provided property listings and help the user find the best fit based on their queries.
+    // Here are the current properties in JSON format:
+    // ${listingsContext}
+
+    // Only recommend properties from the provided listings. Be helpful, concise, and engaging. If they ask about prices, convert strings back to numbers for comparison. DO NOT make up properties that aren't in the list.`
+    // }
+    // });
+    console.log(messages);
+
+    const response2 = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: messages.content,
+    });
+    console.log(response2);
 
     return NextResponse.json({
       role: "assistant",
-      content: aiResponse
+      content: response2.text
     });
 
   } catch (error) {
-    return NextResponse.json({ error: "Agent failed to respond" }, { status: 500 });
+    console.error("Gemini AI Error:", error);
+    return NextResponse.json(
+      { error: "Agent failed to respond. Ensure your GEMINI_API_KEY is set." },
+      { status: 500 }
+    );
   }
 }
