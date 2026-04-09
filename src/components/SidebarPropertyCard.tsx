@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import { MapPin, Star } from 'lucide-react';
+import { MapPin, Star, Heart } from 'lucide-react';
+import { useSavedProperties } from '@/context/SavedPropertiesContext';
 
 interface SidebarPropertyCardProps {
   item: any;
@@ -14,6 +15,10 @@ export default function SidebarPropertyCard({ item, isReviewOpen, onToggleReview
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5);
   const [hasFetchedReviews, setHasFetchedReviews] = useState(false);
+  const { isPropertySaved, toggleSaveProperty } = useSavedProperties();
+  const isSaved = isPropertySaved(item.id);
+
+  const toggleSave = () => toggleSaveProperty(item);
 
   const handleReviewClick = async () => {
     onToggleReview();
@@ -60,8 +65,13 @@ export default function SidebarPropertyCard({ item, isReviewOpen, onToggleReview
   return (
     <div className="bg-[#161616] border border-[#262626] rounded-2xl p-4 hover:border-[#C1F32A]/30 transition-all group">
       <div className="flex justify-between items-start mb-2">
-        <div className="text-[14px] font-bold text-white group-hover:text-[#C1F32A] transition-colors">{item.title}</div>
-        <div className="text-[12px] font-bold text-[#C1F32A]">{item.price}</div>
+        <div className="text-[14px] font-bold text-white group-hover:text-[#C1F32A] transition-colors pr-2">{item.title}</div>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="text-[12px] font-bold text-[#C1F32A]">{item.price}</div>
+          <button onClick={toggleSave} className="text-zinc-500 hover:text-[#C1F32A] transition-colors">
+            <Heart className={`w-4 h-4 ${isSaved ? 'fill-[#C1F32A] text-[#C1F32A]' : ''}`} />
+          </button>
+        </div>
       </div>
       <div className="text-[11px] text-zinc-400 mb-2 flex items-center gap-1">
         <MapPin className="w-3 h-3 text-[#C1F32A]" /> {item.location}

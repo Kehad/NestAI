@@ -30,6 +30,8 @@ Only recommend properties from the provided listings. Be helpful, concise, and e
       }
     });
 
+    console.log(response)
+
     return NextResponse.json({
       role: "assistant",
       content: response.text

@@ -37,11 +37,13 @@ export async function POST(request: NextRequest) {
     const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 
     if (!FIRECRAWL_API_KEY) {
-      console.warn("Firecrawl API key missing. Returning mock data.");
+      console.warn("Firecrawl API key missing. Returning no apartment.");
       return NextResponse.json({
         success: true,
-        source: "mock",
-        listings: generateMockListings(lat, lng, address)
+        source: "none",
+        count: 0,
+        listings: [],
+        message: "no apartment"
       });
     }
 
@@ -151,34 +153,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function generateMockListings(lat: number, lng: number, address: string) {
-  return [
-    {
-      id: "mock-1",
-      title: "Luxury 3-Bedroom Apartment",
-      price: "₦4,500,000/yr",
-      location: address || "Near you",
-      description: "Beautiful modern apartment with 24/7 security and power.",
-      lat: lat + 0.002,
-      lng: lng + 0.003
-    },
-    {
-      id: "mock-2",
-      title: "Cozy Studio Flat",
-      price: "₦1,200,000/yr",
-      location: address || "Near you",
-      description: "Perfect for young professionals. Close to the city center.",
-      lat: lat - 0.001,
-      lng: lng + 0.005
-    },
-    {
-      id: "mock-3",
-      title: "Spacious 4-Bedroom Duplex",
-      price: "₦8,000,000/yr",
-      location: address || "Near you",
-      description: "Family-sized home with large backyard and garage.",
-      lat: lat + 0.005,
-      lng: lng - 0.002
-    }
-  ];
-}
+
