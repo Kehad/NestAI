@@ -34,18 +34,18 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
     if (!searchQuery.trim()) return;
 
     // Check auth rules: allow first search, require login for subsequent searches
-    const hasSearched = localStorage.getItem('nestai_has_searched');
-    if (hasSearched && !user) {
-      alert("You've used your free search! Please sign in with Google to continue searching.");
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin
-        }
-      });
-      if (error) console.error("Login Error:", error.message);
-      return;
-    }
+    // const hasSearched = localStorage.getItem('nestai_has_searched');
+    // if (hasSearched && !user) {
+    //   alert("You've used your free search! Please sign in with Google to continue searching.");
+    //   const { error } = await supabase.auth.signInWithOAuth({
+    //     provider: 'google',
+    //     options: {
+    //       redirectTo: window.location.origin
+    //     }
+    //   });
+    //   if (error) console.error("Login Error:", error.message);
+    //   return;
+    // }
 
     setIsSearching(true);
     try {
