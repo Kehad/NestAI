@@ -64,9 +64,9 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
         onListingsUpdate(data.listings);
         onLocationUpdate(searchQuery);
         // Mark that the user has completed their first search
-        if (!hasSearched) {
-          localStorage.setItem('nestai_has_searched', 'true');
-        }
+        // if (!hasSearched) {
+        //   localStorage.setItem('nestai_has_searched', 'true');
+        // }
       }
     } catch (err) {
       console.error("Search error", err);
