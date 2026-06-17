@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono, Open_Sans } from "next/font/google";
 // import SidebarNav from "@/components/SidebarNav";
 import { SavedPropertiesProvider } from "@/context/SavedPropertiesContext";
 import "./globals.css";
@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${openSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col h-[100dvh] w-full bg-white text-zinc-900 overflow-hidden font-sans">
         <SavedPropertiesProvider>

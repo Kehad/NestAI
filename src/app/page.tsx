@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Copy, Mic, ArrowUp } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -32,13 +32,9 @@ export default function Home() {
       />
 
       <main className="z-10 w-full max-w-2xl px-6 flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-        {/* Logo Placeholder */}
-        <div className="mb-8 w-12 h-12 bg-white rounded-xl shadow-sm border border-zinc-100 flex items-center justify-center">
-          <Sparkles className="w-6 h-6 text-blue-500" />
-        </div>
 
         {/* Title */}
-        <h1 className="text-3xl md:text-4xl font-medium text-zinc-800 mb-12 tracking-tight text-center font-[family-name:var(--font-playfair)]">
+        <h1 className="text-xl font-medium text-zinc-800 mb-12 tracking-tight text-center font-[family-name:var(--font-open-sans)]">
           Welcome to NestAI, let's find your next home.
         </h1>
 
@@ -47,31 +43,23 @@ export default function Home() {
           onSubmit={handleSearch} 
           className="w-full relative flex items-center bg-white/80 backdrop-blur-md border border-zinc-200/80 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300"
         >
-          <div className="pl-4 pr-3 flex items-center justify-center text-zinc-400">
-            <Sparkles className="w-5 h-5" />
-          </div>
-          
+
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by location, landmark, or area..."
-            className="flex-1 py-4 bg-transparent outline-none text-zinc-800 placeholder:text-zinc-400 text-lg"
+            className="flex-1 py-4 pl-6 bg-transparent outline-none text-zinc-800 placeholder:text-zinc-400 text-lg"
           />
 
           <div className="pr-2 flex items-center gap-1.5">
-            <button type="button" className="p-2 text-zinc-400 hover:text-zinc-600 transition-colors rounded-lg hover:bg-zinc-50">
-              <Copy className="w-4 h-4" />
-            </button>
-            <button type="button" className="p-2 text-zinc-400 hover:text-zinc-600 transition-colors rounded-lg hover:bg-zinc-50">
-              <Mic className="w-4 h-4" />
-            </button>
+
             <button 
               type="submit"
               disabled={!searchQuery.trim()}
               className="ml-1 px-4 py-2 bg-zinc-900 text-white rounded-xl font-medium text-sm flex items-center gap-1.5 hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Search <ArrowUp className="w-4 h-4" />
+              Search
             </button>
           </div>
         </form>
