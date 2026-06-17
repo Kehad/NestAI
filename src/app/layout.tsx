@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
-import SidebarNav from "@/components/SidebarNav";
+// import SidebarNav from "@/components/SidebarNav";
 import { SavedPropertiesProvider } from "@/context/SavedPropertiesContext";
 import "./globals.css";
 
@@ -35,9 +35,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col-reverse md:flex-row h-[100dvh] w-full bg-[#111111] text-white overflow-hidden font-sans">
+      <body className="min-h-full flex flex-col h-[100dvh] w-full bg-white text-zinc-900 overflow-hidden font-sans">
         <SavedPropertiesProvider>
-          <SidebarNav />
           <div className="flex-1 overflow-hidden relative w-full h-full flex flex-col">
             {children}
           </div>

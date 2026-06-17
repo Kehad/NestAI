@@ -26,8 +26,8 @@ export default function LeafletMap({ center, zoom, markers = [] }: LeafletMapPro
         attributionControl: false,
       });
 
-      // Geoapify Dark Matter theme tiles
-      L.tileLayer(`https://maps.geoapify.com/v1/tile/dark-matter/{z}/{x}/{y}.png?apiKey=${process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}`, {
+      // Geoapify Light theme tiles
+      L.tileLayer(`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}`, {
         maxZoom: 19,
         attribution: 'Powered by Geoapify | © OpenStreetMap contributors'
       }).addTo(mapInstance.current);
@@ -55,10 +55,10 @@ export default function LeafletMap({ center, zoom, markers = [] }: LeafletMapPro
         userMarkerRef.current.remove();
       }
 
-      // Add custom lime user marker
+      // Add custom dark user marker
       const userIcon = L.divIcon({
         className: 'custom-div-icon',
-        html: `<div style="background-color: #C1F32A; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 15px #C1F32A;"></div>`,
+        html: `<div style="background-color: #000000; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.3);"></div>`,
         iconSize: [14, 14],
         iconAnchor: [7, 7]
       });
