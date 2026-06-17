@@ -79,7 +79,7 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
     <div className="p-6 pb-4 bg-white border-b border-zinc-200">
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-2 font-[family-name:var(--font-open-sans)]" style={{ fontWeight: 800 }}>
+          <h1 className="text-3xl text-black font-bold tracking-tight mb-2 font-[family-name:var(--font-open-sans)]" style={{ fontWeight: 800 }}>
             Find your <span className="text-black italic pr-1" style={{ fontWeight: 800 }}>perfect</span> home
           </h1>
           <div className="flex items-center text-zinc-500 text-xs gap-2 font-medium">
