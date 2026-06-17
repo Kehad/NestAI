@@ -33,7 +33,7 @@ const SCRAPE_CONFIGS = [
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { lat, lng, address } = body;
+    const { lat, lng, address, maxBudget, filter, targetSource } = body;
     const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 
     if (!FIRECRAWL_API_KEY) {
@@ -49,8 +49,12 @@ export async function POST(request: NextRequest) {
 
     const app = new Firecrawl({ apiKey: FIRECRAWL_API_KEY });
 
+    const configsToScrape = targetSource 
+      ? SCRAPE_CONFIGS.filter(c => c.name === targetSource)
+      : SCRAPE_CONFIGS;
+
     // Map through our configs to create an array of fetch promises
-    const scrapePromises = SCRAPE_CONFIGS.map(async (site) => {
+    const scrapePromises = configsToScrape.map(async (site) => {
       try {
         const searchUrl = `${site.baseUrl}${site.searchPath}${encodeURIComponent(address || "")}`;
         
@@ -110,7 +114,35 @@ export async function POST(request: NextRequest) {
     const resultsArray = await Promise.all(scrapePromises);
 
     // Flatten the array of arrays into one single list
-    const allListings = resultsArray.flat();
+    let allListings = resultsArray.flat();
+    
+    // Apply bed filter if provided
+    if (filter && filter !== "All") {
+      const matchText = filter.toLowerCase().replace('+', '');
+      const numBeds = parseInt(matchText);
+      allListings = allListings.filter(listing => {
+        const text = `${listing.title} ${listing.description}`.toLowerCase();
+        if (numBeds) {
+          if (filter === "3+ Bed") {
+            return text.includes("3 bed") || text.includes("4 bed") || text.includes("5 bed") || text.includes("3 room") || text.includes("4 room");
+          }
+          return text.includes(`${numBeds} bed`) || text.includes(`${numBeds} room`) || text.includes(`${numBeds} bedroom`);
+        } else if (filter === "Studio") {
+          return text.includes("studio") || text.includes("self contain") || text.includes("self-contain") || text.includes("mini flat");
+        }
+        return true;
+      });
+    }
+    
+    // Apply budget filter if provided
+    if (maxBudget) {
+      allListings = allListings.filter(listing => {
+        const numericPrice = parseInt(listing.price.replace(/\\D/g, ''));
+        if (isNaN(numericPrice)) return true; // Keep if we can't parse
+        return numericPrice <= maxBudget;
+      });
+    }
+
     console.log("allListings", allListings);
 
     // Sync listings to database in the background

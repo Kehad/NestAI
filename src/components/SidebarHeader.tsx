@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, LogIn, LogOut } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 interface SidebarHeaderProps {
@@ -11,10 +12,15 @@ interface SidebarHeaderProps {
 }
 
 export default function SidebarHeader({ location, onListingsUpdate, onLocationUpdate }: SidebarHeaderProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeChip, setActiveChip] = useState("All");
+  const searchParams = useSearchParams();
+  const initialSearchQuery = searchParams.get("q") || "";
+  const initialFilter = searchParams.get("filter") || "All";
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+  const initialSearchFired = useRef(false);
+  const [activeChip, setActiveChip] = useState(initialFilter);
   const [isSearching, setIsSearching] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [maxBudget, setMaxBudget] = useState<number>(searchParams.get("maxBudget") ? parseInt(searchParams.get("maxBudget")!) : 5000000);
   const chips = ["All", "Studio", "1 Bed", "2 Bed", "3+ Bed"];
 
   useEffect(() => {
@@ -29,9 +35,17 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleSearch = async (e?: React.FormEvent) => {
+  useEffect(() => {
+    if (initialSearchQuery && !initialSearchFired.current) {
+      initialSearchFired.current = true;
+      handleSearch(undefined, initialSearchQuery);
+    }
+  }, [initialSearchQuery]);
+
+  const handleSearch = async (e?: React.FormEvent, overrideQuery?: string) => {
     if (e) e.preventDefault();
-    if (!searchQuery.trim()) return;
+    const queryToUse = overrideQuery || searchQuery;
+    if (!queryToUse.trim()) return;
 
     // Check auth rules: allow first search, require login for subsequent searches
     // const hasSearched = localStorage.getItem('nestai_has_searched');
@@ -48,28 +62,41 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
     // }
 
     setIsSearching(true);
-    try {
-      const res = await fetch('/api/search-houses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          address: searchQuery,
-          lat: 6.5244, // Default to Lagos lat/lng if not available, can be improved to use current map center
-          lng: 3.3792 
-        })
-      });
-      const data = await res.json();
-      console.log(data.listings)
-      if (data.success) {
-        onListingsUpdate(data.listings);
-        onLocationUpdate(searchQuery);
-        // Mark that the user has completed their first search
-        // if (!hasSearched) {
-        //   localStorage.setItem('nestai_has_searched', 'true');
-        // }
+    
+    // Clear previous results immediately
+    onListingsUpdate([]);
+    onLocationUpdate(queryToUse);
+    
+    let currentListings: any[] = [];
+    const sources = ["Jiji", "PropertyPro", "Twitter", "Facebook", "Instagram"];
+    
+    const fetchSource = async (source: string) => {
+      try {
+        const res = await fetch('/api/search-houses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            address: queryToUse,
+            lat: 6.5244, // Default to Lagos lat/lng if not available
+            lng: 3.3792,
+            maxBudget: maxBudget,
+            filter: activeChip,
+            targetSource: source
+          })
+        });
+        const data = await res.json();
+        if (data.success && data.listings && data.listings.length > 0) {
+          // Progressively append
+          currentListings = [...currentListings, ...data.listings];
+          onListingsUpdate([...currentListings]);
+        }
+      } catch (err) {
+        console.error(`Search error for ${source}`, err);
       }
-    } catch (err) {
-      console.error("Search error", err);
+    };
+
+    try {
+      await Promise.allSettled(sources.map(source => fetchSource(source)));
     } finally {
       setIsSearching(false);
     }
@@ -147,6 +174,32 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
             {chip}
           </button>
         ))}
+      </div>
+
+      <div className="mt-4 px-1 flex flex-col w-full">
+        <div className="flex justify-between w-full mb-2 text-[11px] font-semibold text-zinc-600">
+          <span>Max Budget</span>
+          <span>₦ {maxBudget.toLocaleString()}</span>
+        </div>
+        <div className="flex items-center gap-3 w-full">
+          <input
+            type="range"
+            min="100000"
+            max="20000000"
+            step="100000"
+            value={maxBudget}
+            onChange={(e) => setMaxBudget(Number(e.target.value))}
+            className="flex-1 h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-black hover:accent-zinc-800 transition-all"
+          />
+          <input 
+            type="number"
+            value={maxBudget}
+            onChange={(e) => setMaxBudget(Number(e.target.value))}
+            className="w-20 text-xs border border-zinc-200 rounded-md px-1.5 py-1 focus:outline-none focus:border-zinc-400 text-zinc-900"
+            min="100000"
+            max="20000000"
+          />
+        </div>
       </div>
     </div>
   );

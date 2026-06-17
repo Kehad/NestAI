@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [maxBudget, setMaxBudget] = useState<number>(5000000);
   const router = useRouter();
 
   const filters = ["All", "Studio", "1 Bed", "2 Bed", "3+ Bed"];
@@ -18,7 +19,8 @@ export default function Home() {
     // Redirect to explore page with search params
     const params = new URLSearchParams({
       q: searchQuery,
-      filter: activeFilter
+      filter: activeFilter,
+      maxBudget: maxBudget.toString()
     });
     router.push(`/explore?${params.toString()}`);
   };
@@ -65,7 +67,7 @@ export default function Home() {
         </form>
 
         {/* Filters */}
-        <div className="mt-8 flex flex-wrap justify-center gap-2">
+        <div className="mt-12 flex flex-wrap justify-center gap-2">
           {filters.map((filter) => (
             <button
               key={filter}
@@ -80,6 +82,33 @@ export default function Home() {
               {filter}
             </button>
           ))}
+        </div>
+
+        {/* Budget Slider */}
+        <div className="mt-10 w-full max-w-lg animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150 fill-mode-both">
+          <div className="flex items-center gap-4 bg-white/80 backdrop-blur-md border border-zinc-200/80 rounded-full px-5 py-3 shadow-sm">
+            <span className="text-sm font-semibold text-zinc-700 whitespace-nowrap">Max Budget:</span>
+            <input
+              type="range"
+              min="100000"
+              max="20000000"
+              step="100000"
+              value={maxBudget}
+              onChange={(e) => setMaxBudget(Number(e.target.value))}
+              className="flex-1 h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-black hover:accent-zinc-800 transition-all"
+            />
+            <div className="flex items-center gap-1 bg-zinc-50 border border-zinc-200 rounded-lg px-2 py-1">
+              <span className="text-sm font-semibold text-zinc-500">₦</span>
+              <input 
+                type="number"
+                value={maxBudget}
+                onChange={(e) => setMaxBudget(Number(e.target.value))}
+                className="w-20 text-sm font-medium bg-transparent border-none focus:outline-none"
+                min="100000"
+                max="20000000"
+              />
+            </div>
+          </div>
         </div>
       </main>
 
