@@ -21,7 +21,7 @@ export default function MainSidebar({ listings, location, onListingsUpdate, onLo
   };
 
   return (
-    <aside className="w-full md:w-[430px] md:min-w-[400px] bg-[#0c0c0c] border-b md:border-b-0 md:border-r border-[#1f1f1f] flex flex-col h-[70dvh] md:h-full z-10 shadow-2xl relative shrink-0 overflow-hidden">
+    <aside className="w-full md:w-[430px] md:min-w-[400px] bg-white border-b md:border-b-0 md:border-r border-zinc-200 flex flex-col h-[70dvh] md:h-full z-10 shadow-2xl relative shrink-0 overflow-hidden">
        {/* Top Header Section */}
        <SidebarHeader 
          location={location} 
@@ -29,11 +29,11 @@ export default function MainSidebar({ listings, location, onListingsUpdate, onLo
          onLocationUpdate={onLocationUpdate} 
        />
 
-       <div className="h-px bg-[#1f1f1f] w-full"></div>
+       <div className="h-px bg-zinc-200 w-full"></div>
 
        {/* Middle Content Section (Scrollable) */}
        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-          <div className="px-6 py-4 flex justify-between items-center bg-[#0a0a0a]/50 sticky top-0 z-10 border-b border-[#1f1f1f]/50 backdrop-blur-md">
+          <div className="px-6 py-4 flex justify-between items-center bg-white/80 sticky top-0 z-10 border-b border-zinc-200/80 backdrop-blur-md">
             <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-widest">{listings.length} Properties Found</span>
           </div>
 
@@ -48,9 +48,9 @@ export default function MainSidebar({ listings, location, onListingsUpdate, onLo
                 />
               ))
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-center py-24 opacity-30">
-                <Home className="w-12 h-12 text-white mb-4 stroke-[1]" />
-                <p className="text-[12px] text-white max-w-[200px]">Click the "My Location" button to scan for nearby properties</p>
+              <div className="flex-1 flex flex-col items-center justify-center text-center py-24 opacity-50">
+                <Home className="w-12 h-12 text-zinc-400 mb-4 stroke-[1]" />
+                <p className="text-[12px] text-zinc-500 max-w-[200px]">Click the "My Location" button to scan for nearby properties</p>
               </div>
             )}
           </div>

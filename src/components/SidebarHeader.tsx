@@ -76,17 +76,17 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
   };
 
   return (
-    <div className="p-6 pb-4 bg-[#0c0c0c]">
+    <div className="p-6 pb-4 bg-white border-b border-zinc-200">
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-2 font-[family-name:var(--font-playfair)]" style={{ fontWeight: 800 }}>
-            Find your <span className="text-[#C1F32A] italic pr-1" style={{ fontWeight: 800 }}>perfect</span> home
+          <h1 className="text-3xl text-black font-bold tracking-tight mb-2 font-[family-name:var(--font-open-sans)]" style={{ fontWeight: 800 }}>
+            Find your <span className="text-black italic pr-1" style={{ fontWeight: 800 }}>perfect</span> home
           </h1>
           <div className="flex items-center text-zinc-500 text-xs gap-2 font-medium">
             <span>AI-powered rental search</span>
             <div className="flex items-center gap-1">
               <MapPin className="w-3 h-3 text-[#ff3366] fill-[#ff3366]/20" /> 
-              <span className="font-semibold text-zinc-300">{location || "Not yet detected"}</span>
+              <span className="font-semibold text-zinc-600">{location || "Not yet detected"}</span>
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
           ) : (
             <button 
               onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}
-              className="flex items-center gap-1.5 cursor-pointer text-[10px] bg-white/5 text-zinc-400 border border-white/10 px-2 py-1 rounded-md hover:text-white hover:bg-white/10 transition-colors"
+              className="flex items-center gap-1.5 cursor-pointer text-[10px] bg-white text-zinc-600 border border-zinc-200 px-2 py-1 rounded-md hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
             >
               <LogIn className="w-3 h-3" /> Sign In
             </button>
@@ -122,12 +122,12 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Scan for houses near you..."
-          className="w-full bg-[#131313] border border-[#2a2a2a] rounded-xl py-3 pl-11 pr-24 text-sm focus:outline-none focus:border-[#C1F32A]/50 transition-all placeholder:text-zinc-600/80 text-white"
+          className="w-full bg-white border border-zinc-200 rounded-xl py-3 pl-11 pr-24 text-sm focus:outline-none focus:border-zinc-400 transition-all placeholder:text-zinc-400 text-zinc-900"
         />
         <button 
           type="submit"
           disabled={isSearching}
-          className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#C1F32A] text-black font-semibold text-[13px] rounded-[8px] hover:bg-[#b0df22] transition-colors disabled:opacity-50"
+          className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-black text-white font-semibold text-[13px] rounded-[8px] hover:bg-zinc-800 transition-colors disabled:opacity-50"
         >
           {isSearching ? "Searching..." : "Scan"}
         </button>
@@ -140,8 +140,8 @@ export default function SidebarHeader({ location, onListingsUpdate, onLocationUp
             onClick={() => setActiveChip(chip)}
             className={`whitespace-nowrap px-4 py-1.5 rounded-full text-[11px] font-semibold border transition-all ${
               activeChip === chip 
-                ? "bg-[#C1F32A] border-[#C1F32A] text-black" 
-                : "bg-transparent border-[#2a2a2a] text-zinc-400 hover:text-white"
+                ? "bg-black border-black text-white" 
+                : "bg-white border-zinc-200 text-zinc-500 hover:text-zinc-900"
             }`}
           >
             {chip}
